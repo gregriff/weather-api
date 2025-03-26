@@ -5,15 +5,15 @@ requires-python = ">=3.11"
 dependencies = [
     "pandas",
     "fastapi",
+    "httpx",
     "uvicorn[standard]",
     "python-multipart",
     "aiofiles",
+    "aiosqlite",
     "sqlalchemy[asyncio]",
     "pyarrow",
 ]
-optional-dependencies.dev = [
-    "ruff",
-]
+optional-dependencies.dev = ["ruff"]
 
 [tool.ruff]
 line-length = 88

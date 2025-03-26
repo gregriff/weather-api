@@ -16,3 +16,5 @@ build/
 .DS_Store
 
 etc/keycloak/data/*
+
+*.env.json
