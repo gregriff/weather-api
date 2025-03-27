@@ -1,7 +1,7 @@
 from httpx import AsyncClient
 
-from ....api.services.nws.config import AUTH_HEADERS, POINTS_URL, TEST_COORDS
-from ....api.services.nws.types import PointsResponse
+from api.services.nws.config import AUTH_HEADERS, POINTS_URL, TEST_COORDS
+from api.services.nws.types import PointsResponse
 
 
 async def get_test_weather_data():

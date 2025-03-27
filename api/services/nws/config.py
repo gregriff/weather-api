@@ -1,4 +1,4 @@
-from ....api.config import CONFIG
+from api.config import CONFIG
 
 POINTS_URL = f"{CONFIG.nws.root_url}/points"
 GRIDPOINTS_URL = f"{CONFIG.nws.root_url}/gridpoints"

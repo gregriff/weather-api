@@ -9,7 +9,9 @@ install:
 	uv pip install -r requirements.txt
 
 run:
-	uv run uvicorn src.api.main:app --reload --log-level debug
+	uv run uvicorn api.main:app \
+	--reload --reload-include '*.env.json' \
+	--loop uvloop --log-level debug
 
 lint:
 	ruff check --fix

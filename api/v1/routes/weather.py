@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from ....api.services.nws.methods import get_test_weather_data
+from api.services.nws.methods import get_test_weather_data
 
 router = APIRouter()
 
