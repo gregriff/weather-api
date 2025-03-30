@@ -7,6 +7,11 @@ class RelativeLocation(TypedDict):
 
 
 class PointsProperties(TypedDict):
+    cwa: str  # is this or the gridId the office info?
+    forecastOffice: str  # office API endpoint
+    gridId: str
+    gridX: int
+    gridY: int
     forecast: str
     forecastHourly: str
     forecastGridData: str

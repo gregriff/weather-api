@@ -43,10 +43,10 @@ def create_config() -> Config:
         raw_config = load(file)
         raw_config["env"] = env
 
-        try:
-            return Config(**raw_config)
-        except ValidationError as e:
-            raise EnvironmentError(str(e.errors()))
+    try:
+        return Config(**raw_config)
+    except ValidationError as e:
+        raise EnvironmentError(str(e.errors()))
 
 
 CONFIG = create_config()

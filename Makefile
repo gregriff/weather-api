@@ -20,4 +20,4 @@ format: lint
 	ruff format
 
 
-.PHONY: install format lock run lint format
+.PHONY: install format lock run lint

@@ -1,7 +1,9 @@
 from api.config import CONFIG
 
-POINTS_URL = f"{CONFIG.nws.root_url}/points"
-GRIDPOINTS_URL = f"{CONFIG.nws.root_url}/gridpoints"
+BASE_URL = CONFIG.nws.root_url
+POINTS_URL = "/points/%.4f,%.4f"
+FORECAST_URL = "/gridpoints/%s/%d,%d/forecast"
+HOURLY_FORECAST_URL = "/gridpoints/%s/%d,%d/forecast/hourly"
 AUTH_HEADERS = {
     "User-Agent": f"{CONFIG.nws.user_agent_identifier}, {CONFIG.nws.user_agent_email}"
 }
