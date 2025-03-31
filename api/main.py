@@ -28,3 +28,8 @@ async def startup():
 @app.on_event("shutdown")
 async def shutdown():
     await engine.dispose()
+
+
+@app.get("/")
+def root():
+    return "API is working! Append '/docs' to the URL to test"
