@@ -20,29 +20,3 @@ class PointsProperties(TypedDict):
 
 class PointsResponse(TypedDict):
     properties: PointsProperties
-
-
-class ForecastPeriod(TypedDict):
-    number: int
-    name: str
-    startTime: str
-    endTime: str
-    isDaytime: bool
-    temperature: int
-    temperatureUnit: str
-    temperatureTrend: str
-    probabilityOfPrecipitation: dict[Literal["value"], float | int | str | None]
-    windSpeed: str
-    windDirection: str
-    shortForecast: str
-    detailedForecast: str
-
-
-class ForecastProperties(TypedDict):
-    generatedAt: str  # ISO 8601 str repr
-    updateTime: str
-    periods: list[ForecastPeriod]
-
-
-class ForecastResponse(TypedDict):
-    properties: ForecastProperties
