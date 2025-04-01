@@ -6,7 +6,7 @@ lock:
 
 # install all project and dev dependencies in a development venv
 install:
-	uv pip install -r requirements.txt
+	uv pip install -r requirements.txt --require-hashes
 
 run:
 	uv run uvicorn api.main:app \

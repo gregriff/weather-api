@@ -3,6 +3,7 @@ from datetime import datetime
 from typing import List, Optional
 
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+from sqlalchemy.schema import Index
 from sqlalchemy.sql.expression import func
 from sqlalchemy.sql.schema import Column, ForeignKey, Table
 from sqlalchemy.types import (
@@ -21,11 +22,23 @@ class Base(DeclarativeBase):
 
 
 # Many-Many association tables
-settings_cities_association = Table(
+saved_cities_association = Table(
     "saved_cities",
     Base.metadata,
     Column("settings_id", ForeignKey("settings.user_id"), primary_key=True, index=True),
-    Column("city_id", ForeignKey("cities.id"), primary_key=True, index=True),
+    Column("city_id", ForeignKey("locations.id"), primary_key=True, index=True),
+    Column("date_created", DateTime, default=func.now()),
+    Column("last_modified", DateTime, onupdate=func.utc_timestamp()),
+)
+saved_locations_association = Table(
+    "saved_locations",
+    Base.metadata,
+    Column("settings_id", ForeignKey("settings.user_id"), primary_key=True, index=True),
+    Column("location_id", ForeignKey("locations.id"), primary_key=True, index=True),
+    Column("description", VARCHAR(50)),
+    Column("color", VARCHAR(7)),  # hex
+    Column("date_created", DateTime, default=func.now()),
+    Column("last_modified", DateTime, onupdate=func.utc_timestamp()),
 )
 
 
@@ -43,22 +56,25 @@ class User(Base):
 
     # ORM-specific declarations. This allows us to use dot-access on Python instances of Rows to access their relationships for updates and deletes
     # this will auto-JOIN the `settings` table when we make a SELECT on `users`
-    settings: Mapped["UserSettings"] = relationship(
+    settings: Mapped["UserSetting"] = relationship(
         "Settings",
         back_populates="user",
     )
 
 
-class UserSettings(Base):
+class UserSetting(Base):
     __tablename__ = "settings"
 
     user_id: Mapped[str] = mapped_column(
         ForeignKey("users.id"), primary_key=True, index=True
     )
 
-    # there will be a use for this at some point
+    # there will be a use for these at some point in the list view page
     favorite_city_id: Mapped[str] = mapped_column(
-        ForeignKey("cities.id"), nullable=True
+        ForeignKey("locations.id"), nullable=True, index=True
+    )
+    favorite_location_id: Mapped[str] = mapped_column(
+        ForeignKey("locations.id"), nullable=True, index=True
     )
 
     # used to fetch weather data for last-known location of user as soon as app loads
@@ -66,7 +82,7 @@ class UserSettings(Base):
     last_known_gridpoint_y: Mapped[int] = mapped_column(SmallInteger, nullable=False)
 
     # actual settings
-    celcius: Mapped[bool] = mapped_column(Boolean, default=False)
+    metric: Mapped[bool] = mapped_column(Boolean, default=False)
 
     date_created: Mapped[datetime] = mapped_column(DateTime, default=func.now())
     last_modified: Mapped[datetime] = mapped_column(
@@ -75,19 +91,24 @@ class UserSettings(Base):
 
     # ORM-specific declarations and relationships
     user: Mapped["User"] = relationship(back_populates="settings")
-    favorite_city: Mapped[Optional["City"]] = relationship()  # nullable one-to-many
+    favorite_city: Mapped[Optional["Location"]] = relationship()  # nullable one-to-many
+    favorite_location: Mapped[Optional["Location"]] = relationship()
 
     # many-to-many
     # lazy=select prevents `cities` from being auto-joined when we query `settings` (and `users`)
-    saved_cities: Mapped[List["City"]] = relationship(
-        secondary=settings_cities_association, back_populates="settings", lazy="select"
+    saved_cities: Mapped[List["Location"]] = relationship(
+        secondary=saved_cities_association, back_populates="settings", lazy="select"
+    )
+    saved_locations: Mapped[List["Location"]] = relationship(
+        secondary=saved_locations_association, back_populates="settings", lazy="select"
     )
 
 
-class City(Base):
-    __tablename__ = "cities"
+class Location(Base):
+    __tablename__ = "locations"
 
     id: Mapped[str] = mapped_column(UUID, primary_key=True, index=True)
+    is_city: Mapped[bool] = mapped_column(Boolean, nullable=False)
     name: Mapped[str] = mapped_column(VARCHAR(length=30))
 
     # if the gridpoints change, we'll need to make an API call to find the updated gridpoints with these coords
@@ -113,16 +134,4 @@ class City(Base):
     )
 
 
-# TODO:
-# Locations table:
-# - lat, long cols, higher precision
-# - one City, many Locations
-#
-# SavedLocations table:
-# - name col
-# - one UserSettings, many SavedCities.SavedLocations
-# - foreign-key of SavedLocation to get lat-long
-#
-# Stored Procedure to use PostGIS to see which Locations are within the same NWS gridpoint, consolidate those records
-# - this will allow users to use a mapbox to drop pins on places, name them, and get weather for that exact location.
-# - they name these locations and save them. But to keep the number of these reasonable, the stored procedure will cull redundant records
+Index("ix_locations_is_city_id_composite", Location.is_city, Location.id)
