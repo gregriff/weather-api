@@ -3,9 +3,9 @@ from operator import itemgetter
 from fastapi.exceptions import HTTPException
 from httpx import AsyncClient
 
-from api.services.nws.config import FORECAST_URL, POINTS_URL
+from api.services.nws.config import FORECAST_URL, HOURLY_FORECAST_URL, POINTS_URL
 from api.services.nws.types import PointsResponse
-from api.v1.schemas import ForecastResponse
+from api.v1.schemas import ForecastResponse, HourlyForecastResponse
 
 
 async def get_gridpoints_raw(
@@ -40,6 +40,22 @@ async def get_forecast_raw(
     """Expects str coords returned by `format_coordinates`"""
     gridpoint_data, location_data = await get_gridpoints(nws, latitude, longitude)
     res = await nws.get(FORECAST_URL % gridpoint_data)
+    response = res.json()
+    response["properties"]["city"] = location_data[0]
+    response["properties"]["state"] = location_data[1]
+
+    if res.status_code != 200:
+        print(response["detail"])
+        raise HTTPException(res.status_code, detail=response["detail"])
+    return response
+
+
+async def get_hourly_forecast_raw(
+    nws: AsyncClient, latitude: str, longitude: str
+) -> HourlyForecastResponse:
+    """Expects str coords returned by `format_coordinates`"""
+    gridpoint_data, location_data = await get_gridpoints(nws, latitude, longitude)
+    res = await nws.get(HOURLY_FORECAST_URL % gridpoint_data)
     response = res.json()
     response["properties"]["city"] = location_data[0]
     response["properties"]["state"] = location_data[1]

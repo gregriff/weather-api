@@ -39,3 +39,37 @@ class ForecastProperties(BaseModel):
 
 class ForecastResponse(BaseModel):
     properties: ForecastProperties
+
+
+class HourlyForecastPrecipitationObject(BaseModel):
+    value: int | float | None
+    maxValue: int
+    minValue: int
+    unitCode: str
+
+
+class HourlyForecastPeriod(BaseModel):
+    number: int
+    name: str
+    startTime: str
+    endTime: str
+    isDaytime: bool
+    temperatureTrend: str
+    probabilityOfPrecipitation: HourlyForecastPrecipitationObject
+    dewpoint: HourlyForecastPrecipitationObject
+    relativeHumidity: HourlyForecastPrecipitationObject
+    windDirection: str
+    shortForecast: str
+    detailedForecast: str
+
+
+class HourlyForecastProperties(BaseModel):
+    city: str
+    state: str
+    generatedAt: str  # ISO 8601 str repr
+    updateTime: str
+    periods: List[HourlyForecastPeriod]
+
+
+class HourlyForecastResponse(BaseModel):
+    properties: HourlyForecastProperties
