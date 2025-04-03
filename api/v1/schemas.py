@@ -43,8 +43,8 @@ class ForecastResponse(BaseModel):
 
 class HourlyForecastPrecipitationObject(BaseModel):
     value: int | float | None
-    maxValue: int
-    minValue: int
+    maxValue: int | None = None
+    minValue: int | None = None
     unitCode: str
 
 
@@ -64,8 +64,6 @@ class HourlyForecastPeriod(BaseModel):
 
 
 class HourlyForecastProperties(BaseModel):
-    city: str
-    state: str
     generatedAt: str  # ISO 8601 str repr
     updateTime: str
     periods: List[HourlyForecastPeriod]

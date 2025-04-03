@@ -78,11 +78,13 @@ class UserSetting(Base):
     )
 
     # used to fetch weather data for last-known location of user as soon as app loads
-    last_known_gridpoint_x: Mapped[int] = mapped_column(SmallInteger, nullable=False)
-    last_known_gridpoint_y: Mapped[int] = mapped_column(SmallInteger, nullable=False)
+    last_known_gridpoint_office: Mapped[str] = mapped_column(CHAR(3))
+    last_known_gridpoint_x: Mapped[int] = mapped_column(SmallInteger)
+    last_known_gridpoint_y: Mapped[int] = mapped_column(SmallInteger)
 
     # actual settings
     metric: Mapped[bool] = mapped_column(Boolean, default=False)
+    military_time: Mapped[bool] = mapped_column(Boolean, default=False)
 
     date_created: Mapped[datetime] = mapped_column(DateTime, default=func.now())
     last_modified: Mapped[datetime] = mapped_column(

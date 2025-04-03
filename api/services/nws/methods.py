@@ -55,10 +55,11 @@ async def get_hourly_forecast_raw(
 ) -> HourlyForecastResponse:
     """Expects str coords returned by `format_coordinates`"""
     gridpoint_data, location_data = await get_gridpoints(nws, latitude, longitude)
-    res = await nws.get(HOURLY_FORECAST_URL % gridpoint_data)
+    res = await nws.get(
+        HOURLY_FORECAST_URL % gridpoint_data,
+        # headers={"Feature-Flags": "forecast_temperature_qv"},
+    )
     response = res.json()
-    response["properties"]["city"] = location_data[0]
-    response["properties"]["state"] = location_data[1]
 
     if res.status_code != 200:
         print(response["detail"])
