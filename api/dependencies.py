@@ -10,7 +10,7 @@ from api.services.nws.config import AUTH_HEADERS, BASE_URL
 
 async def get_nws():
     """Connection pool for NWS API requests"""
-    client = AsyncClient(base_url=BASE_URL, headers=AUTH_HEADERS)
+    client = AsyncClient(base_url=BASE_URL, headers=AUTH_HEADERS, trust_env=False)
     try:
         yield client
     finally:
