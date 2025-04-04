@@ -27,6 +27,7 @@ saved_cities_association = Table(
     Base.metadata,
     Column("settings_id", ForeignKey("settings.user_id"), primary_key=True, index=True),
     Column("city_id", ForeignKey("locations.id"), primary_key=True, index=True),
+    Column("state", VARCHAR(20)),
     Column("date_created", DateTime, default=func.now()),
     Column("last_modified", DateTime, onupdate=func.utc_timestamp()),
 )

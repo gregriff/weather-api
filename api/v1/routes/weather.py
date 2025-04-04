@@ -8,7 +8,11 @@ from api.services.nws.methods import (
     get_hourly_forecast_raw,
 )
 from api.services.nws.utils import format_coordinates
-from api.v1.schemas import Coordinates, ForecastResponse, HourlyForecastResponse
+from api.v1.schemas import (
+    ForecastResponse,
+    HourlyForecastResponse,
+    LocationData,
+)
 
 router = APIRouter()
 
@@ -16,7 +20,7 @@ router = APIRouter()
 @router.get("/")
 async def test_forecast(nws: NWS):
     lat, long = format_coordinates(*TEST_COORDS)
-    return await get_forecast_raw(nws, lat, long)
+    return await get_forecast_raw(nws, lat, long, None)
 
 
 @router.get("/gridpoints")
@@ -26,16 +30,18 @@ async def test_gridpoints(nws: NWS):
 
 
 @router.post("/forecast")
-async def create_forecast_from_coordinates(
-    coordinates: Coordinates, nws: NWS
+async def get_forecast(
+    location: LocationData,
+    nws: NWS,
 ) -> ForecastResponse:
-    lat, long = format_coordinates(coordinates.latitude, coordinates.longitude)
-    return await get_forecast_raw(nws, lat, long)
+    lat, long = format_coordinates(location.latitude, location.longitude)
+    return await get_forecast_raw(nws, lat, long, location.gridpoints)
 
 
 @router.post("/forecast/hourly")
-async def create_hourly_forecast_from_coordinates(
-    coordinates: Coordinates, nws: NWS
+async def get_hourly_forecast(
+    location: LocationData,
+    nws: NWS,
 ) -> HourlyForecastResponse:
-    lat, long = format_coordinates(coordinates.latitude, coordinates.longitude)
-    return await get_hourly_forecast_raw(nws, lat, long)
+    lat, long = format_coordinates(location.latitude, location.longitude)
+    return await get_hourly_forecast_raw(nws, lat, long, location.gridpoints)

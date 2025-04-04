@@ -5,9 +5,20 @@ from pydantic import BaseModel
 
 
 # Requests
-class Coordinates(BaseModel):
+class Gridpoints(BaseModel):
+    office: str
+    x: int
+    y: int
+
+    # if user provides gridpoints when requesting a forecast, they already have this data
+    city: str
+    state: str
+
+
+class LocationData(BaseModel):
     latitude: float
     longitude: float
+    gridpoints: Gridpoints | None = None
 
 
 # Responses
@@ -30,8 +41,6 @@ class ForecastPeriod(BaseModel):
 
 
 class ForecastProperties(BaseModel):
-    city: str
-    state: str
     generatedAt: str  # ISO 8601 str repr
     updateTime: str
     periods: List[ForecastPeriod]
@@ -39,6 +48,7 @@ class ForecastProperties(BaseModel):
 
 class ForecastResponse(BaseModel):
     properties: ForecastProperties
+    gridpoints: Gridpoints
 
 
 class HourlyForecastPrecipitationObject(BaseModel):
