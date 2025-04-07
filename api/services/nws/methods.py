@@ -3,6 +3,7 @@ from httpx import AsyncClient
 
 from api.services.nws.config import FORECAST_URL, HOURLY_FORECAST_URL, POINTS_URL
 from api.services.nws.types import PointsResponse
+from api.services.nws.utils import set_icon_names
 from api.v1.schemas import (
     ForecastResponse,
     Gridpoints,
@@ -56,6 +57,8 @@ async def get_forecast_raw(
     response = res.json()
     response["gridpoints"] = gridpoints
 
+    set_icon_names(response["properties"]["periods"])
+
     if res.status_code != 200:
         print(response["detail"])
         raise HTTPException(res.status_code, detail=response["detail"])
@@ -76,6 +79,8 @@ async def get_hourly_forecast_raw(
         HOURLY_FORECAST_URL % (gridpoints.office, gridpoints.x, gridpoints.y),
     )
     response = res.json()
+
+    set_icon_names(response["properties"]["periods"])
 
     if res.status_code != 200:
         print(response["detail"])

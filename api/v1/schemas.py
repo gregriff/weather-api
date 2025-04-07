@@ -38,6 +38,8 @@ class ForecastPeriod(BaseModel):
     windDirection: str
     shortForecast: str
     detailedForecast: str
+    icon: str
+    iconName: str
 
 
 class ForecastProperties(BaseModel):
@@ -71,6 +73,8 @@ class HourlyForecastPeriod(BaseModel):
     windDirection: str
     shortForecast: str
     detailedForecast: str
+    icon: str
+    iconName: str
 
 
 class HourlyForecastProperties(BaseModel):
