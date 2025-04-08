@@ -16,12 +16,15 @@ class APIConfig(BaseModel):
 
 
 class NWSConfig(BaseModel):
-    root_url: str = "https://api.weather.gov"
     retry_attempts: int = 3
     user_agent_identifier: str
     user_agent_email: str
     test_lat: float
     test_long: float
+
+
+class MapboxConfig(BaseModel):
+    public_token: str
 
 
 class Config(BaseModel):
@@ -30,6 +33,7 @@ class Config(BaseModel):
     api: APIConfig
     db: DatabaseConfig
     nws: NWSConfig
+    mapbox: MapboxConfig
 
 
 def create_config() -> Config:
@@ -44,7 +48,7 @@ def create_config() -> Config:
         raw_config["env"] = env
 
     try:
-        return Config(**raw_config)
+        return Config(**raw_config)  # uses pydantic to validate shape and types
     except ValidationError as e:
         raise EnvironmentError(str(e.errors()))
 

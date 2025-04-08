@@ -15,7 +15,7 @@ async def get_gridpoints_raw(
     nws: AsyncClient, latitude: str, longitude: str
 ) -> PointsResponse:
     """Expects str coords returned by `format_coordinates`"""
-    res = await nws.get(POINTS_URL % (latitude, longitude))
+    res = await nws.get(POINTS_URL.format(latitude=latitude, longitude=longitude))
     response = res.json()
 
     # TODO: handle case of non-US lat/long, since this will fail?
@@ -53,7 +53,11 @@ async def get_forecast_raw(
     if gridpoints is None:
         gridpoints = await get_gridpoints(nws, latitude, longitude)
 
-    res = await nws.get(FORECAST_URL % (gridpoints.office, gridpoints.x, gridpoints.y))
+    res = await nws.get(
+        FORECAST_URL.format(
+            office=gridpoints.office, grid_x=gridpoints.x, grid_y=gridpoints.y
+        )
+    )
     response = res.json()
     response["gridpoints"] = gridpoints
 
@@ -76,7 +80,9 @@ async def get_hourly_forecast_raw(
         gridpoints = await get_gridpoints(nws, latitude, longitude)
 
     res = await nws.get(
-        HOURLY_FORECAST_URL % (gridpoints.office, gridpoints.x, gridpoints.y),
+        HOURLY_FORECAST_URL.format(
+            office=gridpoints.office, grid_x=gridpoints.x, grid_y=gridpoints.y
+        )
     )
     response = res.json()
 

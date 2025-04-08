@@ -1,10 +1,11 @@
-# used to validate http request bodies and responses
+# used to validate shape and types of NWS-related http request bodies and responses
 from typing import List, Literal
 
 from pydantic import BaseModel
 
+# Requests ####################################################
 
-# Requests
+
 class Gridpoints(BaseModel):
     office: str
     x: int
@@ -21,7 +22,9 @@ class LocationData(BaseModel):
     gridpoints: Gridpoints | None = None
 
 
-# Responses
+# Responses ####################################################
+
+
 class ForecastPeriod(BaseModel):
     number: int
     name: str
