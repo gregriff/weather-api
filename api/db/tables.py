@@ -85,7 +85,7 @@ class UserSetting(Base):
 
     # actual settings
     metric: Mapped[bool] = mapped_column(Boolean, default=False)
-    military_time: Mapped[bool] = mapped_column(Boolean, default=False)
+    international_time: Mapped[bool] = mapped_column(Boolean, default=False)
 
     date_created: Mapped[datetime] = mapped_column(DateTime, default=func.now())
     last_modified: Mapped[datetime] = mapped_column(

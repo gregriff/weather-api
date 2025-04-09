@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi.routing import APIRouter
 
 from api.dependencies import NWS
 from api.services.nws.config import TEST_COORDS
@@ -8,7 +8,7 @@ from api.services.nws.methods import (
     get_hourly_forecast_raw,
 )
 from api.services.nws.utils import format_coordinates
-from api.v1.schemas import (
+from api.v1.schemas.nws import (
     ForecastResponse,
     HourlyForecastResponse,
     LocationData,

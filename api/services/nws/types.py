@@ -1,4 +1,4 @@
-# for static type checking of NWS API Response objects
+# for static type inference of NWS API Response objects
 from typing import Literal, TypedDict
 
 

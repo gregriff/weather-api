@@ -1,10 +1,12 @@
 from fastapi import APIRouter
 
+from api.v1.routes.geocode import router as geocode_router
 from api.v1.routes.weather import router as weather_router
 
 api_v1 = APIRouter()
 
 api_v1.include_router(weather_router, prefix="/weather", tags=["Weather"])
+api_v1.include_router(geocode_router, prefix="/geocode", tags=["Geocode"])
 
 
 @api_v1.get("/", tags=["Root"])
