@@ -4,7 +4,7 @@ from httpx import AsyncClient
 from api.services.nws.config import FORECAST_URL, HOURLY_FORECAST_URL, POINTS_URL
 from api.services.nws.types import PointsResponse
 from api.services.nws.utils import set_icon_names
-from api.v1.schemas import (
+from api.v1.schemas.nws import (
     ForecastResponse,
     Gridpoints,
     HourlyForecastResponse,
@@ -15,14 +15,15 @@ async def get_gridpoints_raw(
     nws: AsyncClient, latitude: str, longitude: str
 ) -> PointsResponse:
     """Expects str coords returned by `format_coordinates`"""
-    res = await nws.get(POINTS_URL.format(latitude=latitude, longitude=longitude))
-    response = res.json()
+    url = POINTS_URL.format(latitude=latitude, longitude=longitude)
+    print(url)
+    res = await nws.get(url)
 
-    # TODO: handle case of non-US lat/long, since this will fail?
-    if res.status_code != 200:
-        print(response["detail"])
-        raise HTTPException(res.status_code, detail=response["detail"])
-    return response
+    if (status := res.status_code) != 200:
+        if status == 400:
+            raise HTTPException(status, detail="GET /gridpoints failed")
+        raise HTTPException(status, detail=res.json()["detail"])
+    return res.json()
 
 
 async def get_gridpoints(nws: AsyncClient, latitude: str, longitude: str) -> Gridpoints:
@@ -59,13 +60,12 @@ async def get_forecast_raw(
         )
     )
     response = res.json()
+    if (status := res.status_code) != 200:
+        raise HTTPException(status, detail=response.get("detail"))
+
     response["gridpoints"] = gridpoints
 
     set_icon_names(response["properties"]["periods"])
-
-    if res.status_code != 200:
-        print(response["detail"])
-        raise HTTPException(res.status_code, detail=response["detail"])
     return response
 
 
@@ -85,10 +85,8 @@ async def get_hourly_forecast_raw(
         )
     )
     response = res.json()
+    if (status := res.status_code) != 200:
+        raise HTTPException(status, detail=response.get("detail"))
 
     set_icon_names(response["properties"]["periods"])
-
-    if res.status_code != 200:
-        print(response["detail"])
-        raise HTTPException(res.status_code, detail=response["detail"])
     return response

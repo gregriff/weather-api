@@ -8,6 +8,11 @@ class Geometry(TypedDict):
     coordinates: list[float]
 
 
+class Context(TypedDict):
+    region: dict[Literal["name", "region_code"], str]
+    place: dict[Literal["name"], str]
+
+
 class FeatureProperties(TypedDict):
     mapbox_id: str
     feature_type: str
@@ -17,6 +22,7 @@ class FeatureProperties(TypedDict):
     coordinates: dict[Literal["longitude", "latitude"], float]
     place_formatted: str
     bbox: list[float]
+    context: Context
 
 
 class Feature(TypedDict):
