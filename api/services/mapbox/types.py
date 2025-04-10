@@ -10,7 +10,7 @@ class Geometry(TypedDict):
 
 class Context(TypedDict):
     region: dict[Literal["name", "region_code"], str]
-    place: dict[Literal["name"], str]
+    place: dict[Literal["name", "mapbox_id"], str]
 
 
 class FeatureProperties(TypedDict):

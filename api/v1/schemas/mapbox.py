@@ -1,5 +1,5 @@
 # used to validate shape and types of Mapbox-related http request bodies and responses
-from typing import List, Literal
+from typing import Literal
 
 from pydantic.main import BaseModel
 
@@ -22,4 +22,4 @@ class PlaceData(BaseModel):
 class GeocodePlacesResponse(BaseModel):
     """Lowest index is highest relevance"""
 
-    places: List[PlaceData]
+    results: dict[str, PlaceData]
