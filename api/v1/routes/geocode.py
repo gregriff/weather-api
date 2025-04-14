@@ -13,18 +13,18 @@ async def geocode_place(query: GeocodeQueryData, mapbox: Mapbox):
         mapbox, query.search_text, query.latitude, query.longitude
     )
 
-    place_data, coordinates, context = [], {}, {}
+    place_data, coordinates, context = {}, {}, {}
     for feature in mapbox_response["features"]:
         coordinates = dict(
             zip(["longitude", "latitude"], feature["geometry"]["coordinates"])
         )
         context = feature["properties"]["context"]
-        place_data.append(
-            dict(
-                coordinates=coordinates,
-                place_name=context["place"]["name"],
-                region_name=context["region"]["name"],
-                region_code=context["region"]["region_code"],
-            )
+        place, region = context["place"], context["region"]
+        place_data[place["mapbox_id"]] = dict(
+            coordinates=coordinates,
+            place_name=place["name"],
+            region_name=region["name"],
+            region_code=region["region_code"],
         )
-    return GeocodePlacesResponse(places=place_data)
+
+    return GeocodePlacesResponse(results=place_data)
