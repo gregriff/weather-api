@@ -26,6 +26,5 @@ async def geocode_place(query: GeocodeQueryData, mapbox: Mapbox):
             region_name=region["name"],
             region_code=region["region_code"],
         )
-    print(place_data)
 
     return GeocodePlacesResponse(results=place_data)
