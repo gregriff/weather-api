@@ -1,3 +1,6 @@
+from typing import Literal
+
+
 def format_coordinates(
     latitude: float | int | str, longitude: float | int | str
 ) -> tuple[str, str]:
@@ -11,7 +14,7 @@ def format_coordinates(
     )
 
 
-def set_icon_names(periods: dict):
+def set_icon_names(periods: list[dict[Literal["icon"] | Literal["iconName"], str]]):
     """
     NWS Forecast responses contain URLs to PNG icons to display for that forecast. In the URL
     is a string unique to the icon. This function gets that string from the icon URL. The frontend
